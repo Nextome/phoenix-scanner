@@ -68,10 +68,22 @@ public class PhoenixScannerServiceManager implements BeaconConsumer, LifecycleOw
 
         beaconManager.setBackgroundMode(true);
 
-        startService(scanPeriod, betweenScanPeriod, receiver, customBeaconReceiver, beaconLayoutList);
+        startServiceInternal(scanPeriod, betweenScanPeriod, receiver, customBeaconReceiver, beaconLayoutList);
     }
 
     public void startService(long scanPeriod,
+                             long betweenScanPeriod,
+                             NextomeBeaconReceiver receiver,
+                             NextomeCustomBeaconReceiver customBeaconReceiver,
+                             List<String> beaconLayoutList) {
+
+        beaconManager.setEnableScheduledScanJobs(false);
+        beaconManager.setBackgroundMode(false);
+
+        startServiceInternal(scanPeriod, betweenScanPeriod, receiver, customBeaconReceiver, beaconLayoutList);
+    }
+
+    private void startServiceInternal(long scanPeriod,
                              long betweenScanPeriod,
                              NextomeBeaconReceiver receiver,
                              NextomeCustomBeaconReceiver customBeaconReceiver,
