@@ -1,0 +1,3 @@
+include ':phoenix-scanner'
+include ':app', ':phoenix-sdk', ':altbeacon'
+setBinding(new Binding([gradle: this]))
