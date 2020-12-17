@@ -52,15 +52,17 @@ public class PhoenixScanner {
 
             @Override
             public void onBeaconLeScan(NextomeRssiBean beacon) {
-                // Between scans, build a buffer
-                String key = getKeyFromBeacon(beacon);
+                if (beacon != null) {
+                    // Between scans, build a buffer
+                    String key = getKeyFromBeacon(beacon);
 
-                if (tempBuffer.containsKey(key)) {
-                    tempBuffer.get(key).addBeacon(beacon);
-                } else {
-                    NextomeBeaconListRaw list = new NextomeBeaconListRaw(beaconListMaxSize);
-                    list.addBeacon(beacon);
-                    tempBuffer.put(key, list);
+                    if (tempBuffer.containsKey(key)) {
+                        tempBuffer.get(key).addBeacon(beacon);
+                    } else {
+                        NextomeBeaconListRaw list = new NextomeBeaconListRaw(beaconListMaxSize);
+                        list.addBeacon(beacon);
+                        tempBuffer.put(key, list);
+                    }
                 }
             }
 

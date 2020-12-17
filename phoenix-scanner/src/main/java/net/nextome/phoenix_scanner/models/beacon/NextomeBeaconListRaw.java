@@ -15,15 +15,16 @@ public class NextomeBeaconListRaw {
     }
 
     public void addBeacon(NextomeRssiBean b) {
-        
-        if (beaconList.size() >= maxListSize) {
-            beaconList.pollLast();
-            beaconList.push(b);
-        } else {
-            beaconList.push(b);
+        if (b != null) {
+            if (beaconList.size() >= maxListSize) {
+                beaconList.pollLast();
+                beaconList.push(b);
+            } else {
+                beaconList.push(b);
+            }
+
+            updatedAt = System.currentTimeMillis();
         }
-        
-        updatedAt = System.currentTimeMillis();
     }
 
     public LinkedList<NextomeRssiBean> getBeaconList() {
