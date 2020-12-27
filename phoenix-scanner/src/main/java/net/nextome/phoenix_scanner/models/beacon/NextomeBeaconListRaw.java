@@ -16,6 +16,7 @@ public class NextomeBeaconListRaw {
 
     public void addBeacon(NextomeRssiBean b) {
         if (b != null) {
+
             if (beaconList.size() >= maxListSize) {
                 beaconList.pollLast();
                 beaconList.push(b);

@@ -16,6 +16,8 @@ public class NextomeBeaconParser {
                 b.getMajor(),
                 b.getMinor(),
                 b.getTxPower(),
-                NextomeRssiBean.iBeaconProximity.unknow, b.getBattery());
+                NextomeRssiBean.iBeaconProximity.unknow,
+                b.getBattery(),
+                scanRecord);
     }
 }

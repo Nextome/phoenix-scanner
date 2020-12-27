@@ -9,6 +9,7 @@ public class NextomeRssiBean implements Comparable<NextomeRssiBean>{
     public int major;
     public int map;
     public int TxPower;
+    public byte[] scanResult;
 
     @Override
     public int compareTo(NextomeRssiBean nextomeRssiBean) {
@@ -30,7 +31,9 @@ public class NextomeRssiBean implements Comparable<NextomeRssiBean>{
     public NextomeRssiBean(){
     }
 
-    public NextomeRssiBean(String UUID, double rssi, int major, int minor, int txPower, iBeaconProximity proximity, int battery) {
+    public NextomeRssiBean(String UUID, double rssi, int major, int minor, int txPower,
+                           iBeaconProximity proximity, int battery,
+                           byte[] scanResult) {
         this.RSSI = rssi;
         this.UUID  = UUID;
         this.minor = minor;
@@ -38,6 +41,7 @@ public class NextomeRssiBean implements Comparable<NextomeRssiBean>{
         this.TxPower = txPower;
         this.Proximity = proximity;
         this.battery = battery;
+        this.scanResult = scanResult;
     }
 
     public String getKey(){
@@ -147,5 +151,13 @@ public class NextomeRssiBean implements Comparable<NextomeRssiBean>{
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public byte[] getScanResult() {
+        return scanResult;
+    }
+
+    public void setScanResult(byte[] scanResult) {
+        this.scanResult = scanResult;
     }
 }
