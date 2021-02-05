@@ -21,11 +21,12 @@ import androidx.lifecycle.MutableLiveData;
 public class PhoenixScanner {
     private Context context;
 
-    private long foregroundScanPeriod = 5000L;
-    private long foregroundBetweenScanPeriod = 500L;
-    private long backgroundScanPeriod = 3000L;
-    private long backgroundBetweenScanPeriod = 500L;
-    private int beaconListMaxSize = 30;
+    private long foregroundScanPeriod = 1000L;
+    private long foregroundBetweenScanPeriod = 250L;
+    private long backgroundScanPeriod = 1000L;
+    private long backgroundBetweenScanPeriod = 250L;
+    private int beaconListMaxSize = 12;
+    private int rssiThreshold = -75;
 
     private MutableLiveData<HashMap<String, NextomeBeaconListRaw>> liveBeaconsMap = new MutableLiveData<>();
 
@@ -53,15 +54,17 @@ public class PhoenixScanner {
             @Override
             public void onBeaconLeScan(NextomeRssiBean beacon) {
                 if (beacon != null) {
-                    // Between scans, build a buffer
-                    String key = getKeyFromBeacon(beacon);
+                    if (beacon.getRSSI() > rssiThreshold) {
+                        // Between scans, build a buffer
+                        String key = getKeyFromBeacon(beacon);
 
-                    if (tempBuffer.containsKey(key)) {
-                        tempBuffer.get(key).addBeacon(beacon);
-                    } else {
-                        NextomeBeaconListRaw list = new NextomeBeaconListRaw(beaconListMaxSize);
-                        list.addBeacon(beacon);
-                        tempBuffer.put(key, list);
+                        if (tempBuffer.containsKey(key)) {
+                            tempBuffer.get(key).addBeacon(beacon);
+                        } else {
+                            NextomeBeaconListRaw list = new NextomeBeaconListRaw(beaconListMaxSize);
+                            list.addBeacon(beacon);
+                            tempBuffer.put(key, list);
+                        }
                     }
                 }
             }
@@ -69,7 +72,6 @@ public class PhoenixScanner {
             @Override
             public void onScanRangingFinished() {
                 currentTs = System.currentTimeMillis();
-
 
                 // Filtered beacon after expiry time
                 HashMap<String, NextomeBeaconListRaw> scannedBeacons = new HashMap<>();
@@ -82,7 +84,8 @@ public class PhoenixScanner {
                     }
                 }
 
-                liveBeaconsMap.setValue(scannedBeacons);
+
+                liveBeaconsMap.setValue(tempBuffer);
             }
         };
     }
@@ -196,5 +199,13 @@ public class PhoenixScanner {
 
     public Context getContext() {
         return context;
+    }
+
+    public int getRssiThreshold() {
+        return rssiThreshold;
+    }
+
+    public void setRssiThreshold(int rssiThreshold) {
+        this.rssiThreshold = rssiThreshold;
     }
 }

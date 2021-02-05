@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.RemoteException;
+import android.util.Log;
 
 import net.nextome.phoenix_scanner.helper.NextomeBeaconParser;
 import net.nextome.phoenix_scanner.interf.NextomeBeaconReceiver;
@@ -63,6 +64,8 @@ public class PhoenixScannerServiceManager implements BeaconConsumer, LifecycleOw
 
         beaconManager.enableForegroundServiceScanning(foregroundNotification, code);
         beaconManager.setEnableScheduledScanJobs(false);
+        beaconManager.setForegroundScanPeriod(backgroundScanPeriod);
+        beaconManager.setForegroundBetweenScanPeriod(backgroundBetweenScanPeriod);
         beaconManager.setBackgroundScanPeriod(backgroundScanPeriod);
         beaconManager.setBackgroundBetweenScanPeriod(backgroundBetweenScanPeriod);
 
@@ -79,6 +82,8 @@ public class PhoenixScannerServiceManager implements BeaconConsumer, LifecycleOw
 
         beaconManager.setEnableScheduledScanJobs(false);
         beaconManager.setBackgroundMode(false);
+        beaconManager.setForegroundScanPeriod(scanPeriod);
+        beaconManager.setForegroundBetweenScanPeriod(betweenScanPeriod);
 
         startServiceInternal(scanPeriod, betweenScanPeriod, receiver, customBeaconReceiver, beaconLayoutList);
     }
@@ -94,7 +99,9 @@ public class PhoenixScannerServiceManager implements BeaconConsumer, LifecycleOw
 
         addBeaconLayouts(beaconLayoutList);
 
+
         beaconManager.setForegroundScanPeriod(scanPeriod);
+
         beaconManager.setNonBeaconLeScanCallback(new NonBeaconLeScanCallback() {
             @Override
             public void onNonBeaconLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -113,7 +120,9 @@ public class PhoenixScannerServiceManager implements BeaconConsumer, LifecycleOw
 
         beaconManager.setForegroundBetweenScanPeriod(betweenScanPeriod);
         beaconManager.bind(this);
+
     }
+
 
     private void addBeaconLayouts(List<String> beaconLayoutList) {
         // Always add iBeacon format for Nextome Beacons
@@ -129,6 +138,12 @@ public class PhoenixScannerServiceManager implements BeaconConsumer, LifecycleOw
 
     @Override
     public void onBeaconServiceConnect() {
+        try {
+            beaconManager.updateScanPeriods();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
