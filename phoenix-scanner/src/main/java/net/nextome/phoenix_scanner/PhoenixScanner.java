@@ -85,7 +85,7 @@ public class PhoenixScanner {
                 }
 
 
-                liveBeaconsMap.setValue(tempBuffer);
+                liveBeaconsMap.setValue(scannedBeacons);
             }
         };
     }
